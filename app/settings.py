@@ -37,6 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'polymorphic',
+    'chatrooms',
 ]
 
 MIDDLEWARE = [
@@ -76,12 +78,12 @@ WSGI_APPLICATION = 'app.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'prod',                      
-        'USER': 'YourUser',
-        'PASSWORD': 'YourPass',
+        'NAME': 'sih',                      
+        'USER': 'postgres',
+        'PASSWORD': '',
         'HOST': '127.0.0.1',
         'PORT': '5432', # This is default PostgreSQL port.
-        'TIME_ZONE' : 'Asia/Kolkata' # Used for string representation of datetimes if database doesn't support dates.
+        # 'TIME_ZONE' : 'Asia/Kolkata' # Used for string representation of datetimes if database doesn't support dates.
     }
 }
 

@@ -1,0 +1,17 @@
+{% load staticfiles %}
+
+<html>
+    <head>
+        <title></title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <script type="text/javascript" charset="utf-8"
+            src="{% static 'js/jquery_csrf_ajax.js' %}">
+        </script>
+        {% block extra_headers %}            
+        {% endblock %}
+    </head>
+    <body>        
+        {% block content %}  
+        {% endblock %}
+    </body>
+</html>
