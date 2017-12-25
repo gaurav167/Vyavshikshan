@@ -7,7 +7,7 @@ from django_load.core import load_object
 from .decorators import (signals_new_message_at_end,
                         waits_for_new_message_at_start)
 from ..models import Room, Message
-
+# from django.http import HttpResponse
 
 class MessageHandler(object):
     """
@@ -89,6 +89,7 @@ class MessageHandler(object):
     def get_latest_message_id(self, chatobj, room_id):
         """Returns id of the latest retrieved message """
         latest_msg_id = -1
+        # return HttpResponse(chatobj.messages)
         msgs_queue = chatobj.messages[room_id]
         if msgs_queue:
             latest_msg_id = msgs_queue[-1][0]
@@ -118,3 +119,5 @@ class MessageHandlerFactory(object):
         if not cls._instance:
             cls._instance = klass()
         return cls._instance
+        # cls._instance = klass()
+        # return cls._instance

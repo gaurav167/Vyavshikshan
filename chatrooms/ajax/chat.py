@@ -1,9 +1,13 @@
 # encoding: utf-8
-
+# from gevent import monkey
+# from psycogreen.gevent import patch_psycopg
+# monkey.patch_all(thread=False)
+# patch_psycopg()
 import json
 import itertools
 from datetime import datetime, timedelta
 from collections import deque
+import time
 
 from django.conf import settings
 from django.db.models.signals import post_save
@@ -20,7 +24,7 @@ from ..utils.auth import check_user_passes_test
 from ..utils.decorators import ajax_user_passes_test_or_403
 from ..utils.decorators import ajax_room_login_required
 from ..utils.handlers import MessageHandlerFactory
-
+# from django.shortcuts import render
 
 TIME_FORMAT = '%Y-%m-%dT%H:%M:%S:%f'
 
@@ -88,7 +92,8 @@ class ChatView(object):
 
     def wait_for_new_message(self, room_id, timeout=TIMEOUT):
         """Waits for new_message_event given a room_id """
-        self.new_message_events[room_id].wait(timeout)
+        # self.new_message_events[room_id].wait(timeout) # HERE
+        time.sleep(timeout)
 
     def get_messages_queue(self, room_id):
         """Returns the message queue given a room_id """
@@ -96,7 +101,7 @@ class ChatView(object):
 
     def get_next_message_id(self, room_id):
         """Returns the next message identifier given a room_id """
-        return self.counters[room_id].next()
+        return next(self.counters[room_id])
 
     def get_connected_users(self, room_id):
         """Returns the connected users given a room_id"""
@@ -120,9 +125,7 @@ class ChatView(object):
             "Expected a GET request with 'room_id' and 'latest_message_id' "
             "parameters")
 
-        messages = self.handler.retrieve_messages(
-                        self, room_id, latest_msg_id)
-
+        messages = self.handler.retrieve_messages(self, room_id, latest_msg_id)
         to_jsonify = [
             {"message_id": msg_id,
              "username": message.username,
@@ -157,8 +160,7 @@ class ChatView(object):
             username=username,
             message=message,
             date=date,
-            user=user if user.is_authenticated() else None)
-
+            user=user if user.is_authenticated else None)
         return HttpResponse(json.dumps({
                  'timestamp': date.strftime(TIME_FORMAT), }
         ))
@@ -195,14 +197,14 @@ class ChatView(object):
         self.connected_users[room_id].update({
                                 username: datetime.today()
                             })
-        self.new_connected_user_event[room_id].wait(REFRESH_TIME)
-
+        # self.new_connected_user_event[room_id].wait(REFRESH_TIME) # HERE
+        time.sleep(REFRESH_TIME)
         # clean connected_users dictionary of disconnected users
         self._clean_connected_users(room_id)
         json_users = [
             {"username": _user,
              "date": _date.strftime(TIME_FORMAT)}
-            for _user, _date in self.connected_users[room_id].iteritems()
+            for _user, _date in self.connected_users[room_id].items()
         ]
         json_response = {
             "now": datetime.today().strftime(TIME_FORMAT),
@@ -220,7 +222,12 @@ class ChatView(object):
             room_id = int(request.GET['room_id'])
         except:
             return HttpResponseBadRequest()
-        latest_msg_id = self.handler.get_latest_message_id(self, room_id)
+        # return HttpResponse(json.dumps(dir(self)), content_type="application/json")
+        # latest_msg_id = self.handler.get_latest_message_id(self, room_id)
+        msgs_queue = self.messages[room_id]
+        latest_msg_id = 1
+        if msgs_queue:
+            latest_msg_id = msgs_queue[-1][0]
         response = {"id": latest_msg_id}
         return HttpResponse(json.dumps(response), content_type="application/json")
 
