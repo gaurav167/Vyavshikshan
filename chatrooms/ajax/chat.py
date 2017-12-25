@@ -93,7 +93,7 @@ class ChatView(object):
     def wait_for_new_message(self, room_id, timeout=TIMEOUT):
         """Waits for new_message_event given a room_id """
         # self.new_message_events[room_id].wait(timeout) # HERE
-        time.sleep(timeout)
+        time.sleep(1)
 
     def get_messages_queue(self, room_id):
         """Returns the message queue given a room_id """
@@ -198,7 +198,7 @@ class ChatView(object):
                                 username: datetime.today()
                             })
         # self.new_connected_user_event[room_id].wait(REFRESH_TIME) # HERE
-        time.sleep(REFRESH_TIME)
+        time.sleep(5)
         # clean connected_users dictionary of disconnected users
         self._clean_connected_users(room_id)
         json_users = [
@@ -225,7 +225,7 @@ class ChatView(object):
         # return HttpResponse(json.dumps(dir(self)), content_type="application/json")
         # latest_msg_id = self.handler.get_latest_message_id(self, room_id)
         msgs_queue = self.messages[room_id]
-        latest_msg_id = 1
+        latest_msg_id = -1
         if msgs_queue:
             latest_msg_id = msgs_queue[-1][0]
         response = {"id": latest_msg_id}
