@@ -40,10 +40,7 @@ INSTALLED_APPS = [
     'polymorphic',
     'chatrooms',
     'posts',
-    'about',
     'contact',
-    'home',
-    'write',
 ]
 
 MIDDLEWARE = [
