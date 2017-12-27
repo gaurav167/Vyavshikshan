@@ -6,6 +6,32 @@ from .models import Post, Category
 from django.http import HttpResponse, Http404, QueryDict
 
 
+# Create a new Post
+def submit_blog(request):
+	if request.method == "POST":
+		try:
+			try:
+				author = request.POST.get('author')
+				title = request.POST.get('title')
+				subtitle = request.POST.get('subtitle')
+				text = request.POST.get('text')
+				image = request.FILES['image']
+				categories = request.POST.get('category')
+			except:
+				return JsonResponse({'status':'failed', 'message':'Invalid POST data.'})
+			try:
+				categ = Category.objects.get(name=categories)
+			except:
+				categ = Category.objects.create(name=categories)
+			try:
+				new_post = Post.objects.create(author=author, title=title, subtitle=subtitle, text=text, categories=categ.id, image=image)
+			except:
+				return JsonResponse({'status':'failed', 'message':"Couldn't create Post object"})
+		except:
+			return JsonResponse({'status':'failed','message':'None'})
+	else:
+		raise "Only available via POST."
+
 # Show all Posts
 def index(request):
 	if request.method == "GET":
@@ -51,32 +77,6 @@ def respond(request,num,action):
 			return JsonResponse({'status':'failed','message':'None'})
 	else:
 		raise "Only available via PUT."
-
-# Create a new Post
-def submit_blog(request):
-	if request.method == "POST":
-		try:
-			try:
-				author = request.POST.get('author')
-				title = request.POST.get('title')
-				subtitle = request.POST.get('subtitle')
-				text = request.POST.get('text')
-				image = request.FILES['image']
-				categories = request.POST.get('category')
-			except:
-				return JsonResponse({'status':'failed', 'message':'Invalid POST data.'})
-			try:
-				categ = Category.objects.get(name=categories)
-			except:
-				categ = Category.objects.create(name=categories)
-			try:
-				new_post = Post.objects.create(author=author, title=title, subtitle=subtitle, text=text, categories=categ.id, image=image)
-			except:
-				return JsonResponse({'status':'failed', 'message':"Couldn't create Post object"})
-		except:
-			return JsonResponse({'status':'failed','message':'None'})
-	else:
-		raise "Only available via POST."
 
 # Edit a post
 def edit_post(request,id):
@@ -124,6 +124,8 @@ def delete_post(request,id):
 			return JsonResponse({'status':'failed','message':'Cannot delete post at the moment.'})
 	else:
 		raise "Only available via DELETE."
+
+
 
 
 # Create a category
