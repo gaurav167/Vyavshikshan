@@ -25,6 +25,6 @@ class Post(models.Model):
 class Category(models.Model):
     name = models.CharField(max_length=20)
     likes = models.PositiveSmallIntegerField(default=0)
-
+    dislikes = models.PositiveSmallIntegerField(default=0)
     def __str__(self):
         return self.name
