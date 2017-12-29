@@ -11,11 +11,12 @@ class Post(models.Model):
     created_date = models.DateTimeField(default=timezone.now)
     published_date = models.DateTimeField(blank=True, null=True)
     categories = models.ForeignKey('Category',on_delete=models.CASCADE)
-    image = models.ImageField(upload_to='static/img/photo', height_field=None, width_field=None ,default='static/img/default.jpg')
+    image = models.ImageField(upload_to='static/img/photo', height_field=None, width_field=None ,null=True)
     likes = models.PositiveSmallIntegerField(default=0)
     dislikes = models.PositiveSmallIntegerField(default=0)
 
     def publish(self):
+        self.image = None
         self.published_date = timezone.now()
         self.save()
 
