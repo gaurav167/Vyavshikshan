@@ -6,9 +6,6 @@ from django.shortcuts import render
 
 # Create your views here.
 
-def index(request):
-	return render(request,'contact/contact.html',{'name' : 'Contact Us'})
-
 def submit(request):
 	if request.method == 'POST':
 		name = request.POST['name']
@@ -26,4 +23,4 @@ def submit(request):
     to_list,
     fail_silently=True,
 	)
-	return HttpResponse('')
+	return HttpResponse('SUCCESS')
