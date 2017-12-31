@@ -44,8 +44,6 @@ def submit_blog(request):
 				return JsonResponse({'status':'success'})
 			except:
 				return JsonResponse({'status':'failed', 'message':"Couldn't create Post object"})
-		# except Exception as e:
-			# return HttpResponse(e)
 		except:
 			return JsonResponse({'status':'failed','message':'None'})
 	else:
@@ -64,7 +62,7 @@ def post_list(request):
 def page_by_num(request,pk):
 	if request.method == "GET":
 		try:
-			post = Post.objects.get(pk=pk)
+			post = [Post.objects.get(pk=pk)]
 		except:
 			return JsonResponse({'error':'Post not Found','status':'404'})
 		data = serializers.serialize('json', post)
