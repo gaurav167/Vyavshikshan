@@ -24,5 +24,6 @@ urlpatterns = [
     path('blog/', include('posts.urls')),
     path('about/',include('about.urls')),
     path('contact/',include('contact.urls')),
+    path('trans/',include('translate.urls')),
 ]
 urlpatterns += staticfiles_urlpatterns()
