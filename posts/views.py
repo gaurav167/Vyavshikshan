@@ -47,7 +47,7 @@ def submit_blog(request):
 		except:
 			return JsonResponse({'status':'failed','message':'None'})
 	else:
-		return JsonResponse({'error':'Only available via POST.','status':'403'})
+		return JsonResponse({'error':'Only available via POST.','status_code':'400'})
 
 # Show all Posts
 def post_list(request):
@@ -56,7 +56,7 @@ def post_list(request):
 		data = serializers.serialize('json', posts)
 		return JsonResponse(data, safe=False)
 	else:
-		return JsonResponse({'error':'Only available via GET.','status':'403'})
+		return JsonResponse({'error':'Only available via GET.','status_code':'400'})
 
 # Show post by primary key
 def page_by_num(request,pk):
@@ -64,11 +64,11 @@ def page_by_num(request,pk):
 		try:
 			post = [Post.objects.get(pk=pk)]
 		except:
-			return JsonResponse({'error':'Post not Found','status':'404'})
+			return JsonResponse({'error':'Post not Found','status_code':'404'})
 		data = serializers.serialize('json', post)
 		return JsonResponse(data, safe=False)
 	else:
-		return JsonResponse({'error':'Only available via GET.','status':'403'})
+		return JsonResponse({'error':'Only available via GET.','status_code':'400'})
 
 # Show posts by category name
 def page_by_name(request,category):
@@ -76,15 +76,17 @@ def page_by_name(request,category):
 		try:
 			categ = Category.objects.get(name=category.lower())
 		except:
-			return JsonResponse({'error':'Category not Found','status':'404'})
+			return JsonResponse({'error':'Category not Found','status_code':'404'})
 		try:
-			posts = Post.objects.get(categories=categ.id)
+			posts = Post.objects.filter(categories=categ.id)
+			if len(posts) == 0:
+				return JsonResponse({'status':'failed','message':'No post in this category.'})
 		except:
-			return JsonResponse({'error':'Not Found','status':'404'})
+			return JsonResponse({'error':'Not Found','status_code':'404'})
 		data = serializers.serialize('json', posts)
 		return JsonResponse(data, safe=False)
 	else:
-		return JsonResponse({'error':'Only available via GET.','status':'403'})
+		return JsonResponse({'error':'Only available via GET.','status_code':'400'})
 
 # Like/Dislike post
 def respond(request,num,action):
@@ -93,17 +95,20 @@ def respond(request,num,action):
 			try:
 				post = Post.objects.get(pk=num)
 			except:
-				return JsonResponse({'error':'Post not Found','status':'404'})
+				return JsonResponse({'error':'Post not Found','status_code':'404'})
+			action = action.lower()
 			if action == 'like':
 				post.likes += 1
-			if action == 'dislike':
+			elif action == 'dislike':
 				post.dislikes += 1
+			else:
+				return JsonResponse({'status':'failed','message':'Unknown action.'})
 			post.save()
 			return JsonResponse({"status":"success"})
 		except:
 			return JsonResponse({'status':'failed','message':'None'})
 	else:
-		return JsonResponse({'error':'Only available via PUT.','status':'403'})
+		return JsonResponse({'error':'Only available via PUT.','status_code':'400'})
 
 # Edit a post
 def edit_post(request,id):
@@ -144,7 +149,7 @@ def edit_post(request,id):
 		# except:			
 		# 	return JsonResponse({'status':'failed','message':'Cannot update post.'})
 	else:
-		return JsonResponse({'error':'Only available via PATCH.','status':'403'})
+		return JsonResponse({'error':'Only available via PATCH.','status_code':'400'})
 
 # Delete a post
 def delete_post(request,id):
@@ -155,10 +160,11 @@ def delete_post(request,id):
 			return JsonResponse({'status':'failed','message':'Post does not exist'})
 		try:
 			post.delete()
+			return JsonResponse({'status':'success'})
 		except:
 			return JsonResponse({'status':'failed','message':'Cannot delete post at the moment.'})
 	else:
-		return JsonResponse({'error':'Only available via DELETE.','status':'403'})
+		return JsonResponse({'error':'Only available via DELETE.','status_code':'400'})
 
 
 
@@ -181,25 +187,41 @@ def submit_category(request):
 			else:
 				return JsonResponse({"status":"success"})
 	else:
-		return JsonResponse({'error':'Only available via POST.','status':'403'})
+		return JsonResponse({'error':'Only available via POST.','status_code':'400'})
 
 # Get all categories
 def all_categs(request):
 	if request.method == "GET":
-		categories = Category.objects.order_by('name')
+		try:
+			categories = Category.objects.order_by('name')
+		except:
+			return JsonResponse({'status':'failed','message':'No categories'})
 		data = serializers.serialize('json', categories)
 		return JsonResponse(data, safe=False)
 	else:
-		return JsonResponse({'error':'Only available via GET.','status':'403'})
+		return JsonResponse({'error':'Only available via GET.','status_code':'400'})
+
+# Get category by name
+def get_categ(request,name):
+	if request.method == "GET":
+		try:
+			categ = [Category.objects.get(name=name.lower())]
+		except:
+			return JsonResponse({'status':'failed','message':'No such category'})
+		data = serializers.serialize('json', categ)
+		return JsonResponse(data, safe=False)
+	else:
+		return JsonResponse({'error':'Only available via GET.','status_code':'400'})
 
 # Like/Dislike a category
-def category_respond(request,id,action):
+def category_respond(request,name,action):
 	if request.method == "PUT":
 		try:
-			categ = Category.objects.get(pk=id)
+			categ = Category.objects.get(name=name.lower())
 		except:
-			return JsonResponse({'error':'Not Found','status':'404'})
+			return JsonResponse({'error':'Not Found','status_code':'404'})
 		try:
+			action = action.lower()
 			if action == 'like':
 				categ.likes += 1
 			elif action == 'dislike':
@@ -209,7 +231,7 @@ def category_respond(request,id,action):
 		except:
 			return JsonResponse({'status':'failed','message':'None'})
 	else:
-		return JsonResponse({'error':'Only available via PUT.','status':'403'})
+		return JsonResponse({'error':'Only available via PUT.','status_code':'400'})
 
 # Delete a category
 def delete_categ(request,id):
@@ -220,7 +242,8 @@ def delete_categ(request,id):
 			return JsonResponse({'status':'failed','message':'Category does not exist'})
 		try:
 			categ.delete()
+			return JsonResponse({'status':'success'})
 		except:
 			return JsonResponse({'status':'failed','message':'Cannot delete category at the moment.'})
 	else:
-		return JsonResponse({'error':'Only available via DELETE.','status':'403'})
+		return JsonResponse({'error':'Only available via DELETE.','status_code':'400'})
