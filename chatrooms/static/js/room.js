@@ -68,30 +68,9 @@ $(function(){
               url: '/chat/send_message/',
               data: data_to_send,
               success: function(data){
-                $('#chatSendText').attr('value', "");
-                }
-              // dataType: 'json'
-            })
-            .done(function(){
-                // $('#chatSendText').attr('value', "");
                 $('#chatSendText').val('');
-                console.log('yes');
-            })
-            .fail(function(err){
-                console.log(err);
+                }
             });
-            // $.post('/chat/send_message/', data_to_send, function(data){
-            //     $('#chatSendText').attr('value', "");
-            // })
-            // .done(function() {
-            //   console.log( "second success" );
-            // })
-            // .fail(function() {
-            //   console.log( "error" );
-            // })
-            // .always(function() {
-            //   console.log( "finished" );
-            // });
         }
     };
 
