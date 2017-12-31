@@ -54,7 +54,7 @@ def ajax_room_login_required(view_func):
             if room.allow_anonymous_access:
                 return view_func(request, *args, **kwargs)
         if request.is_ajax():
-            if False:# request.user.is_authenticated():
+            if request.user.is_authenticated:
                 return view_func(request, *args, **kwargs)
             else:
                 response = HttpResponse()
@@ -78,7 +78,7 @@ def room_check_access(view_func):
     def _wrapped_view(request, *args, **kwargs):
         room_slug = kwargs.get('slug')
         room = get_object_or_404(Room, slug=room_slug)
-        if False : # request.user.is_authenticated():
+        if request.user.is_authenticated:
             return view_func(request, *args, **kwargs)
         elif room.allow_anonymous_access:
             if not request.session.get('guest_name'):

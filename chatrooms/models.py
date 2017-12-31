@@ -21,6 +21,8 @@ class Room(PolymorphicModel):
     @models.permalink
     def get_absolute_url(self):
         return ('room_view', [self.slug])
+    def __str__(self):
+        return self.name
 
 
 class Message(PolymorphicModel):
@@ -30,3 +32,6 @@ class Message(PolymorphicModel):
     date = models.DateTimeField()
     room = models.ForeignKey(Room, on_delete=models.CASCADE)
     content = models.CharField(max_length=5000)
+
+    def __str__(self):
+        return self.content
