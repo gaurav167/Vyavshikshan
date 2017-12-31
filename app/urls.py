@@ -22,5 +22,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('chat/', include('chatrooms.urls')),
     path('blog/', include('posts.urls')),
+    path('trans/', include('translate.urls')),
 ]
 urlpatterns += staticfiles_urlpatterns()
