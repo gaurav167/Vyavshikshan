@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'posts',
     'contact',
     'translate',
+    'qaplatform',
 ]
 
 MIDDLEWARE = [

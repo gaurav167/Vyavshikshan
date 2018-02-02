@@ -3,9 +3,12 @@ from django.http import JsonResponse
 from .models import Post, Category
 from django.http import QueryDict,HttpResponse
 from django.contrib.auth.models import User
+from django.views.decorators.csrf import csrf_exempt
+
 
 
 # Create a new Post
+@csrf_exempt
 def submit_blog(request):
 	if request.method == "POST":
 		try:
@@ -111,6 +114,7 @@ def respond(request,num,action):
 		return JsonResponse({'error':'Only available via PUT.','status_code':'400'})
 
 # Edit a post
+@csrf_exempt
 def edit_post(request,id):
 	if request.method == "POST":
 		try:
@@ -168,8 +172,8 @@ def delete_post(request,id):
 
 
 
-
 # Create a category
+@csrf_exempt
 def submit_category(request):
 	if request.method == "POST":
 		try:

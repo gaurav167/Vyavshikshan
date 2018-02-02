@@ -23,5 +23,6 @@ urlpatterns = [
     path('chat/', include('chatrooms.urls')),
     path('blog/', include('posts.urls')),
     path('trans/', include('translate.urls')),
+    path('test/', include('qaplatform.urls')),
 ]
 urlpatterns += staticfiles_urlpatterns()
