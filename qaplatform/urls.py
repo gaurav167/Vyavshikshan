@@ -13,10 +13,10 @@ urlpatterns=[
 
 	# Question URL
 
-	# Get all questions
-	path('question/all/', views.ques_all, name='ques_all'),
 	# Add new question
 	path('question/add/', views.add_ques, name='add_ques'),
+	# Get all questions
+	path('question/all/', views.ques_all, name='ques_all'),
 	# Edit question
 	path('question/edit/<int:id>/', views.edit_ques, name='edit_ques'),
 	# Delete question

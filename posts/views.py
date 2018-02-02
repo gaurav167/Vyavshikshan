@@ -124,7 +124,7 @@ def edit_post(request,id):
 		try:
 			# data = request.POST
 			querydict = QueryDict('', mutable=True)
-			for key in request.POST.iteritems():
+			for key in request.POST.items():
 			    postlist = post[key].split(',')
 			    querydict.setlist(key, postlist)
 			# for field in data.keys():

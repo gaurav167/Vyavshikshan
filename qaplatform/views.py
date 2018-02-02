@@ -2,17 +2,113 @@ from django.shortcuts import render
 from django.http import QueryDict,HttpResponse
 from django.core import serializers
 from django.http import JsonResponse
-from .models import Question, Session
+from .models import Question, Session, Response
 from django.views.decorators.csrf import csrf_exempt
 
+import json
+
+
+# Global Point Scale
+diff = {
+	'Hard' : 3,
+	'Medium' : 2,
+	'Easy' : 1
+}
+
+av_score = 10
+
+
+@csrf_exempt
 def starttest(request):
-	pass
+	if request.method == "POST":
+		try:
+			try:
+				student = request.POST.get('student')
+				subject = request.POST.get('subject')
+			except:
+				return JsonResponse({'status':'failed', 'message':'Invalid POST data.'})
+			try:
+				user = User.objects.get(username=student)
+			except:
+				return JsonResponse({'status':'failed','message':'User does not exist.'})
+			try:
+				s_data = {
+				'student':user,
+				}
+				sess = Session(**s_data)
+				sess.save()
+			except:
+				return JsonResponse({'status':'failed','message':'Cannot create Session object'})
+			try:
+				questions = Question.objects.filter(subject=subject)
+				if len(questions) == 0:
+					return JsonResponse({'status':'failed','message':'No questions in this category.'})
+			except:
+				return JsonResponse({'error':'Not Found','status_code':'404'})
+			
+			to_send = {
+			'sess_id':sess.id,
+			'questions':questions
+			}
+			data = serializers.serialize('json', to_send)
+			return JsonResponse(data, safe=False)
+		
+		except:
+			return JsonResponse({'status':'failed','message':'none'})
 
+	else:
+		return JsonResponse({'error':'Only available via POST.','status_code':'400'})
+
+
+@csrf_exempt
 def stoptest(request):
-	pass
+	if request.method == "POST":
+		try:
+			try:
+				sess_id = request.POST.get('sess_id')
+				resp = request.POST.get('responses') # {question_id:response}
+				resp = resp.replace("'", "\"")
+				resp = json.loads(resp)
+			except:
+				return JsonResponse({'status':'failed', 'message':'Invalid POST data.'})
+			try:
+				sess = Session.objects.get(id=sess_id)
+			except:
+				return JsonResponse({'status':'failed','message':'Session does not exist.'})
+			try:
+				score = 0
+				for key, value in resp:
+					try:
+						ques = Question.objects.get(id=key)
+					except:
+						pass
+					else:
+						r_data={
+						'question_id':ques.id,
+						'response':value,
+						'correct_resp':ques.correct_ans,
+						'sess':sess
+						}
+						res = Response(**r_data)
+						res.save()
+						
+						global diff, av_score
+						if ques.correct_ans == value:
+							score += diff[ques.difficulty] * av_score
 
-def upload_ques(request):
-	pass
+				sess.score = score
+				sess.end_test()
+			except:
+				return JsonResponse({'status':'failed','message':'Cannot update Session object'})
+
+			data = serializers.serialize('json', sess)
+			return JsonResponse(data, safe=False)
+
+		except:
+			return JsonResponse({'status':'failed','message':'none'})
+
+	else:
+		return JsonResponse({'error':'Only available via POST.','status_code':'400'})
 
 
 def ques_all(request):
@@ -25,6 +121,7 @@ def ques_all(request):
 		return JsonResponse(data, safe=False)
 	else:
 		return JsonResponse({'error':'Only available via GET.','status_code':'400'})
+
 
 @csrf_exempt
 def add_ques(request):
@@ -64,6 +161,7 @@ def add_ques(request):
 	else:
 		return JsonResponse({'error':'Only available via POST.','status_code':'400'})
 
+
 @csrf_exempt
 def edit_ques(request,id):
 	if request.method == "POST":
@@ -74,7 +172,7 @@ def edit_ques(request,id):
 		try:
 			# data = request.POST
 			querydict = QueryDict('', mutable=True)
-			for key in request.POST.iteritems():
+			for key in request.POST.items():
 			    queslist = ques[key].split(',')
 			    querydict.setlist(key, queslist)
 			# for field in data.keys():
@@ -104,6 +202,7 @@ def edit_ques(request,id):
 		# 	return JsonResponse({'status':'failed','message':'Cannot update post.'})
 	else:
 		return JsonResponse({'error':'Only available via PATCH.','status_code':'400'})
+
 
 @csrf_exempt
 # Delete a question

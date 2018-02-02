@@ -29,3 +29,12 @@ class Session(models.Model):
 
 	def __str__(self):
 		return self.id
+
+class Response(models.Model):
+	question_id = models.IntegerField(default=0)
+	response = models.CharField(max_length=1)
+	correct_resp = models.CharField(max_length=1)
+	sess = models.ForeignKey('Session',on_delete=models.CASCADE)
+
+	def __str__(self):
+		return self.question_id
