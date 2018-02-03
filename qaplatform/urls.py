@@ -9,7 +9,8 @@ urlpatterns=[
 	path('start/', views.starttest, name='starttest'),
 	# Stop Test Session and Evaluate Score
 	path('stop/', views.stoptest, name='stoptest'),
-	
+	# Revise previous solutions
+	path('revise/<int:sess_id>/', views.revise, name='revise'),
 
 	# Question URL
 

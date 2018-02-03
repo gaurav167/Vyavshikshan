@@ -5,7 +5,7 @@ from django.utils import timezone
 
 class Question(models.Model):
 	subject = models.CharField(max_length=15)
-	difficulty = models.CharField(max_length=6) # Can be ['Easy', 'Medium', 'Hard'].
+	difficulty = models.CharField(max_length=6) # Can be ['High', 'Medium', 'Low'].
 	ques = models.TextField()
 	op1 = models.TextField()
 	op2 = models.TextField()
@@ -28,7 +28,7 @@ class Session(models.Model):
 		self.save()
 
 	def __str__(self):
-		return self.id
+		return str(self.id)
 
 class Response(models.Model):
 	question_id = models.IntegerField(default=0)
@@ -37,4 +37,4 @@ class Response(models.Model):
 	sess = models.ForeignKey('Session',on_delete=models.CASCADE)
 
 	def __str__(self):
-		return self.question_id
+		return str(self.question_id)

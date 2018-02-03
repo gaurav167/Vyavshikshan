@@ -3,6 +3,7 @@ from django.http import QueryDict,HttpResponse
 from django.core import serializers
 from django.http import JsonResponse
 from .models import Question, Session, Response
+from django.contrib.auth.models import User
 from django.views.decorators.csrf import csrf_exempt
 
 import json
@@ -10,9 +11,9 @@ import json
 
 # Global Point Scale
 diff = {
-	'Hard' : 3,
+	'High' : 3,
 	'Medium' : 2,
-	'Easy' : 1
+	'Low' : 1
 }
 
 av_score = 10
@@ -22,6 +23,7 @@ av_score = 10
 def starttest(request):
 	if request.method == "POST":
 		try:
+		# if True:
 			try:
 				student = request.POST.get('student')
 				subject = request.POST.get('subject')
@@ -30,7 +32,7 @@ def starttest(request):
 			try:
 				user = User.objects.get(username=student)
 			except:
-				return JsonResponse({'status':'failed','message':'User does not exist.'})
+				return JsonResponse({'status':'failed','message':'User '+student+' does not exist.'})
 			try:
 				s_data = {
 				'student':user,
@@ -46,12 +48,16 @@ def starttest(request):
 			except:
 				return JsonResponse({'error':'Not Found','status_code':'404'})
 			
+			data = serializers.serialize('json', questions)
+			data = data.replace(', \"correct_ans\": \"A\"',"")
+			data = data.replace(', \"correct_ans\": \"B\"',"")
+			data = data.replace(', \"correct_ans\": \"C\"',"")
+			data = data.replace(', \"correct_ans\": \"D\"',"")
 			to_send = {
 			'sess_id':sess.id,
-			'questions':questions
+			'questions':data
 			}
-			data = serializers.serialize('json', to_send)
-			return JsonResponse(data, safe=False)
+			return JsonResponse(to_send, safe=False)
 		
 		except:
 			return JsonResponse({'status':'failed','message':'none'})
@@ -64,9 +70,13 @@ def starttest(request):
 def stoptest(request):
 	if request.method == "POST":
 		try:
+		# if True:
 			try:
 				sess_id = request.POST.get('sess_id')
 				resp = request.POST.get('responses') # {question_id:response}
+				pos = resp.rfind(',')
+				if pos > resp.rfind(':'):
+					resp = resp[:pos] + resp[pos + 1:]
 				resp = resp.replace("'", "\"")
 				resp = json.loads(resp)
 			except:
@@ -76,16 +86,17 @@ def stoptest(request):
 			except:
 				return JsonResponse({'status':'failed','message':'Session does not exist.'})
 			try:
+			# if True:
 				score = 0
-				for key, value in resp:
+				for key in resp:
 					try:
-						ques = Question.objects.get(id=key)
+						ques = Question.objects.get(id=int(key))
 					except:
 						pass
 					else:
 						r_data={
 						'question_id':ques.id,
-						'response':value,
+						'response':resp[key],
 						'correct_resp':ques.correct_ans,
 						'sess':sess
 						}
@@ -93,7 +104,7 @@ def stoptest(request):
 						res.save()
 						
 						global diff, av_score
-						if ques.correct_ans == value:
+						if ques.correct_ans == resp[key]:
 							score += diff[ques.difficulty] * av_score
 
 				sess.score = score
@@ -101,7 +112,7 @@ def stoptest(request):
 			except:
 				return JsonResponse({'status':'failed','message':'Cannot update Session object'})
 
-			data = serializers.serialize('json', sess)
+			data = serializers.serialize('json', [sess])
 			return JsonResponse(data, safe=False)
 
 		except:
@@ -118,6 +129,10 @@ def ques_all(request):
 		except:
 			return JsonResponse({'status':'failed','message':'Questions does not exist'})
 		data = serializers.serialize('json', ques)
+		data = data.replace(', \"correct_ans\": \"A\"',"")
+		data = data.replace(', \"correct_ans\": \"B\"',"")
+		data = data.replace(', \"correct_ans\": \"C\"',"")
+		data = data.replace(', \"correct_ans\": \"D\"',"")
 		return JsonResponse(data, safe=False)
 	else:
 		return JsonResponse({'error':'Only available via GET.','status_code':'400'})
@@ -219,3 +234,32 @@ def delete_ques(request,id):
 			return JsonResponse({'status':'failed','message':'Cannot delete question at the moment.'})
 	else:
 		return JsonResponse({'error':'Only available via DELETE.','status_code':'400'})
+
+
+def revise(request,sess_id):
+	if request.method == 'GET':
+		try:
+		# if True:
+			s = Session.objects.get(id=sess_id)
+			resp = Response.objects.filter(sess=s)
+			if len(resp) == 0:
+				return JsonResponse({'status':'failed','message':'No responses with this Session ID'})
+		except:
+			return JsonResponse({'status':'failed','message':'Cannot find Reponse/Session Object'})
+
+		to_send={}
+		for r in resp:
+			try:
+				ques = Question.objects.get(id=r.question_id)
+			except:
+				pass
+			else:
+				q = {
+				'student_response':r.response,
+				'correct_response':r.correct_resp
+				}
+				to_send[ques.ques] = q
+		# data = serializers.serialize('json', resp)
+		return JsonResponse(to_send, safe=False)
+	else:
+		return JsonResponse({'error':'Only available via GET.','status_code':'400'})
