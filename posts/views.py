@@ -3,9 +3,12 @@ from django.http import JsonResponse
 from .models import Post, Category
 from django.http import QueryDict,HttpResponse
 from django.contrib.auth.models import User
+from django.views.decorators.csrf import csrf_exempt
+
 
 
 # Create a new Post
+@csrf_exempt
 def submit_blog(request):
 	if request.method == "POST":
 		try:
@@ -111,6 +114,7 @@ def respond(request,num,action):
 		return JsonResponse({'error':'Only available via PUT.','status_code':'400'})
 
 # Edit a post
+@csrf_exempt
 def edit_post(request,id):
 	if request.method == "POST":
 		try:
@@ -118,38 +122,15 @@ def edit_post(request,id):
 		except:
 			return JsonResponse({'status':'failed','message':'No post with id='+str(id)})
 		try:
-			# data = request.POST
-			querydict = QueryDict('', mutable=True)
-			for key in request.POST.iteritems():
-			    postlist = post[key].split(',')
-			    querydict.setlist(key, postlist)
-			# for field in data.keys():
-			# 	if field == 'title':
-			# 		post.title = data[field]
-			# 	if field == 'subtitle':
-			# 		post.subtitle = data[field]
-			# 	if field == 'text':
-			# 		post.text = data[field]
-			# 	if field == 'category':
-			# 		try:
-			# 			categ = Category.objects.get(name=data[field])
-			# 		except:
-			# 			categ = Category.objects.create(name=data[field])
-			# 		post.categories = categ.id
-			# try:
-			# 	img = request.FILES['image']
-			# 	post.image = img
-			# except:
-			# 	pass
-			Post.objects.filter(id=id).update(**querydict)
-			# post.save()
-			return HttpResponse(data)
-		except Exception as e:
-			return HttpResponse(e)
-		# except:			
-		# 	return JsonResponse({'status':'failed','message':'Cannot update post.'})
+			p_data = request.POST.dict()
+			for attr, value in p_data.items():
+				setattr(post, attr, value)
+			post.save()
+			return JsonResponse({'status':'success'})
+		except:
+			return JsonResponse({'status':'failed', 'message':'Cannot update Post Object.'})
 	else:
-		return JsonResponse({'error':'Only available via PATCH.','status_code':'400'})
+		return JsonResponse({'error':'Only available via POST.','status_code':'400'})
 
 # Delete a post
 def delete_post(request,id):
@@ -168,8 +149,8 @@ def delete_post(request,id):
 
 
 
-
 # Create a category
+@csrf_exempt
 def submit_category(request):
 	if request.method == "POST":
 		try:
