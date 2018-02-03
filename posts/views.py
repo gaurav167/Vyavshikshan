@@ -122,38 +122,15 @@ def edit_post(request,id):
 		except:
 			return JsonResponse({'status':'failed','message':'No post with id='+str(id)})
 		try:
-			# data = request.POST
-			querydict = QueryDict('', mutable=True)
-			for key in request.POST.items():
-			    postlist = post[key].split(',')
-			    querydict.setlist(key, postlist)
-			# for field in data.keys():
-			# 	if field == 'title':
-			# 		post.title = data[field]
-			# 	if field == 'subtitle':
-			# 		post.subtitle = data[field]
-			# 	if field == 'text':
-			# 		post.text = data[field]
-			# 	if field == 'category':
-			# 		try:
-			# 			categ = Category.objects.get(name=data[field])
-			# 		except:
-			# 			categ = Category.objects.create(name=data[field])
-			# 		post.categories = categ.id
-			# try:
-			# 	img = request.FILES['image']
-			# 	post.image = img
-			# except:
-			# 	pass
-			Post.objects.filter(id=id).update(**querydict)
-			# post.save()
-			return HttpResponse(data)
-		except Exception as e:
-			return HttpResponse(e)
-		# except:			
-		# 	return JsonResponse({'status':'failed','message':'Cannot update post.'})
+			p_data = request.POST.dict()
+			for attr, value in p_data.items():
+				setattr(post, attr, value)
+			post.save()
+			return JsonResponse({'status':'success'})
+		except:
+			return JsonResponse({'status':'failed', 'message':'Cannot update Post Object.'})
 	else:
-		return JsonResponse({'error':'Only available via PATCH.','status_code':'400'})
+		return JsonResponse({'error':'Only available via POST.','status_code':'400'})
 
 # Delete a post
 def delete_post(request,id):

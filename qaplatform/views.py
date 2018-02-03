@@ -185,36 +185,13 @@ def edit_ques(request,id):
 		except:
 			return JsonResponse({'status':'failed','message':'No question with id='+str(id)})
 		try:
-			# data = request.POST
-			querydict = QueryDict('', mutable=True)
-			for key in request.POST.items():
-			    queslist = ques[key].split(',')
-			    querydict.setlist(key, queslist)
-			# for field in data.keys():
-			# 	if field == 'title':
-			# 		post.title = data[field]
-			# 	if field == 'subtitle':
-			# 		post.subtitle = data[field]
-			# 	if field == 'text':
-			# 		post.text = data[field]
-			# 	if field == 'category':
-			# 		try:
-			# 			categ = Category.objects.get(name=data[field])
-			# 		except:
-			# 			categ = Category.objects.create(name=data[field])
-			# 		post.categories = categ.id
-			# try:
-			# 	img = request.FILES['image']
-			# 	post.image = img
-			# except:
-			# 	pass
-			Question.objects.filter(id=id).update(**querydict)
-			# post.save()
-			return HttpResponse(data)
-		except Exception as e:
-			return HttpResponse(e)
-		# except:			
-		# 	return JsonResponse({'status':'failed','message':'Cannot update post.'})
+			p_data = request.POST.dict()
+			for attr, value in p_data.items():
+				setattr(ques, attr, value)
+			ques.save()
+			return JsonResponse({'status':'success'})
+		except:
+			return JsonResponse({'status':'failed', 'message':'Cannot update Question Object.'})
 	else:
 		return JsonResponse({'error':'Only available via PATCH.','status_code':'400'})
 
