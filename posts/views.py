@@ -92,6 +92,7 @@ def page_by_name(request,category):
 		return JsonResponse({'error':'Only available via GET.','status_code':'400'})
 
 # Like/Dislike post
+@csrf_exempt
 def respond(request,num,action):
 	if request.method == "PUT":
 		try:
@@ -133,6 +134,7 @@ def edit_post(request,id):
 		return JsonResponse({'error':'Only available via POST.','status_code':'400'})
 
 # Delete a post
+@csrf_exempt
 def delete_post(request,id):
 	if request.method == 'DELETE':
 		try:
@@ -195,6 +197,7 @@ def get_categ(request,name):
 		return JsonResponse({'error':'Only available via GET.','status_code':'400'})
 
 # Like/Dislike a category
+@csrf_exempt
 def category_respond(request,name,action):
 	if request.method == "PUT":
 		try:
@@ -215,6 +218,7 @@ def category_respond(request,name,action):
 		return JsonResponse({'error':'Only available via PUT.','status_code':'400'})
 
 # Delete a category
+@csrf_exempt
 def delete_categ(request,id):
 	if request.method == 'DELETE':
 		try:
