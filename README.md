@@ -165,3 +165,18 @@ PostgreSQL/MongoDB
   11. Delete a category : /category/CATEGORY_ID/delete/
   
    Request Method : DELETE
+
+
+ - Transtalte API : /trans/
+ 
+  1. Translate to regional language :
+  
+   Request Method : POST
+   
+   Form Data :
+   
+              from - Current language of text
+              
+              to - Language to convert into
+              
+              text - Text to be converted
