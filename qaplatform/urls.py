@@ -1,4 +1,4 @@
-from django.urls import path, re_path
+from django.conf.urls import url
 from . import views
 
 urlpatterns=[
@@ -6,20 +6,20 @@ urlpatterns=[
 	# Manage Tests URLs
 	
 	# Start Test Session
-	path('start/', views.starttest, name='starttest'),
+	url('start/', views.starttest, name='starttest'),
 	# Stop Test Session and Evaluate Score
-	path('stop/', views.stoptest, name='stoptest'),
+	url('stop/', views.stoptest, name='stoptest'),
 	# Revise previous solutions
-	path('revise/<int:sess_id>/', views.revise, name='revise'),
+	url('revise/(?P<sess_id>\d+)/', views.revise, name='revise'),
 
 	# Question URL
 
 	# Add new question
-	path('question/add/', views.add_ques, name='add_ques'),
+	url('question/add/', views.add_ques, name='add_ques'),
 	# Get all questions
-	path('question/all/', views.ques_all, name='ques_all'),
+	url('question/all/', views.ques_all, name='ques_all'),
 	# Edit question
-	path('question/edit/<int:id>/', views.edit_ques, name='edit_ques'),
+	url('question/edit/(?P<id>\d+)/', views.edit_ques, name='edit_ques'),
 	# Delete question
-	path('question/delete/<int:id>/', views.delete_ques, name='delete_ques'),
+	url('question/delete/(?P<id>\d+)/', views.delete_ques, name='delete_ques'),
 ]

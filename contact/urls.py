@@ -1,6 +1,6 @@
-from django.urls import path
+from django.conf.urls import url
 from . import views
 
 urlpatterns=[
-	path('submit/' ,views.submit ,name = 'contact_submit'),
+	url('submit/' ,views.submit ,name = 'contact_submit'),
 ]

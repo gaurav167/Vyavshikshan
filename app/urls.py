@@ -14,15 +14,15 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path, include
+from django.conf.urls import url, include
 # from django.conf.urls import url
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('chat/', include('chatrooms.urls')),
-    path('blog/', include('posts.urls')),
-    path('trans/', include('translate.urls')),
-    path('test/', include('qaplatform.urls')),
+    url('admin/', admin.site.urls),
+    url('chat/', include('chatrooms.urls')),
+    url('blog/', include('posts.urls')),
+    url('trans/', include('translate.urls')),
+    url('test/', include('qaplatform.urls')),
 ]
 urlpatterns += staticfiles_urlpatterns()
