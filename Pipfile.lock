@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "b4500f92d50c8dbbc940165dd8815092153ec30ed1c6ab3dff6b2bdf64c08914"
+            "sha256": "a6303dbf4972df69d3212056129822a704a2ad47870f07aa197c9e47ddce0486"
         },
         "host-environment-markers": {
             "implementation_name": "cpython",
@@ -43,10 +43,10 @@
         },
         "django": {
             "hashes": [
-                "sha256:af18618ce3291be5092893d8522fe3919661bf3a1fb60e3858ae74865a4f07c2",
-                "sha256:9614851d4a7ff8cbd32b73c6076441f377c45a5bbff7e771798fb02c43c31f47"
+                "sha256:7c8ff92285406fb349e765e9ade685eec7271d6f5c3f918e495a74768b765c99",
+                "sha256:dc3b61d054f1bced64628c62025d480f655303aea9f408e5996c339a543b45f0"
             ],
-            "version": "==2.0"
+            "version": "==2.0.2"
         },
         "django-chatrooms": {
             "hashes": [
