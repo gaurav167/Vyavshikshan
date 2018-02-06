@@ -17,7 +17,7 @@ PostgreSQL/MongoDB
 
 
 ## Contribution Instructions for backend : 
- 1. Use Django 2.0 or greater. Some features will not work on earlier versions.
+ 1. Use Django 1.11 or greater. Some features will not work on earlier versions.
  2. Make separate branch for each feature assigned to you. Master branch only contains stable and tested features.
  3. All feature will be integrated via Pull Requests only. A merge will be done after it is reviewed by atleast one member.
 
