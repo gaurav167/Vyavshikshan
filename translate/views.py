@@ -14,7 +14,7 @@ mapping_values={'Telugu': 'te',
 		        'Gujarati': 'gu',
 		        'Urdu': 'ur'}
 def translate(request):
-	if request.method == 'POST' and request.META['HTTP_HOST'] == 'localhost:8000':
+	if request.method == 'POST':
 		try:
 			from_language = request.POST['from']
 			to_language = request.POST['to']
