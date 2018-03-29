@@ -28,6 +28,9 @@ DEBUG = True
 ALLOWED_HOSTS = ['127.0.0.1','localhost','pure-dusk-51790.herokuapp.com','totalblogger.pythonanywhere.com']
 
 
+# Login URL
+LOGIN_URL = "/user/login/"
+
 # Application definition
 
 INSTALLED_APPS = [
