@@ -15,12 +15,11 @@ class Room(PolymorphicModel):
     private = models.NullBooleanField()
     password = models.CharField(max_length=32, blank=True)
 
-    def __unicode__(self):
-        return u"%s" % self.name
 
     @models.permalink
     def get_absolute_url(self):
         return ('room_view', [self.slug])
+
     def __str__(self):
         return self.name
 

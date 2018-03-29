@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.http import QueryDict,HttpResponse
+from django.http import QueryDict
 from django.core import serializers
 from django.http import JsonResponse
 from .models import Question, Session, Response

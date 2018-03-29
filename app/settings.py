@@ -37,12 +37,13 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-#    'polymorphic',
- #   'chatrooms',
+    'polymorphic',
+    'chatrooms',
     'posts',
     'contact',
     'translate',
     'qaplatform',
+    'user',
 ]
 
 MIDDLEWARE = [

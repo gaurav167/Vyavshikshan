@@ -20,9 +20,10 @@ from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
 urlpatterns = [
     url('admin/', admin.site.urls),
-#    url('chat/', include('chatrooms.urls')),
+    url('chat/', include('chatrooms.urls')),
     url('blog/', include('posts.urls')),
     url('trans/', include('translate.urls')),
     url('test/', include('qaplatform.urls')),
+    url('user/', include('user.urls')),
 ]
 urlpatterns += staticfiles_urlpatterns()
