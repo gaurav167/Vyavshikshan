@@ -108,13 +108,13 @@ class MessageHandlerFactory(object):
     def __new__(cls):
         klass = MessageHandler
         if hasattr(settings, 'CHATROOMS_HANDLERS_CLASS'):
-            try:
-                klass = load_object(settings.CHATROOMS_HANDLERS_CLASS)
-            except (ImportError, TypeError) as exc:
-                raise ImproperlyConfigured(
-                    "An error occurred while loading the "
-                    "CHATROOMS_HANDLERS_CLASS: %s" % exc
-                )
+            # try:
+            #     klass = load_object(settings.CHATROOMS_HANDLERS_CLASS)
+            # except (ImportError, TypeError) as exc:
+            raise ImproperlyConfigured(
+                "An error occurred while loading the "
+                "CHATROOMS_HANDLERS_CLASS: %s" % exc
+            )
 
         if not cls._instance:
             cls._instance = klass()
