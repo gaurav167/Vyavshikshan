@@ -2,7 +2,7 @@
 
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
-from django_load.core import load_object
+# from django_load.core import load_object
 
 from .decorators import (signals_new_message_at_end,
                         waits_for_new_message_at_start)
