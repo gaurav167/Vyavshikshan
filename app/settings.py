@@ -25,7 +25,7 @@ SECRET_KEY = 'w1i$2a@5h49b9ai*t)&os85wt8d3xl_5&^=@_ng7=vh*+-9uxd'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1','localhost','pure-dusk-51790.herokuapp.com','totalblogger.pythonanywhere.com']
+ALLOWED_HOSTS = ['127.0.0.1','localhost','vyavshikshan.herokuapp.com','totalblogger.pythonanywhere.com']
 
 
 # Login URL
