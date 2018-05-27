@@ -57,7 +57,7 @@ def post_list(request):
 	if request.method == "GET":
 		posts = Post.objects.order_by('-published_date')
 		data = serializers.serialize('json', posts)
-		return JsonResponse(data, safe=False)
+		return HttpResponse(data, content_type="application/json")
 	else:
 		return JsonResponse({'error':'Only available via GET.','status_code':'400'})
 
@@ -69,7 +69,7 @@ def page_by_num(request,pk):
 		except:
 			return JsonResponse({'error':'Post not Found','status_code':'404'})
 		data = serializers.serialize('json', post)
-		return JsonResponse(data, safe=False)
+		return HttpResponse(data, content_type="application/json")
 	else:
 		return JsonResponse({'error':'Only available via GET.','status_code':'400'})
 
@@ -87,7 +87,7 @@ def page_by_name(request,category):
 		except:
 			return JsonResponse({'error':'Not Found','status_code':'404'})
 		data = serializers.serialize('json', posts)
-		return JsonResponse(data, safe=False)
+		return HttpResponse(data, content_type="application/json")
 	else:
 		return JsonResponse({'error':'Only available via GET.','status_code':'400'})
 
@@ -180,7 +180,7 @@ def all_categs(request):
 		except:
 			return JsonResponse({'status':'failed','message':'No categories'})
 		data = serializers.serialize('json', categories)
-		return JsonResponse(data, safe=False)
+		return HttpResponse(data, content_type="application/json")
 	else:
 		return JsonResponse({'error':'Only available via GET.','status_code':'400'})
 
@@ -192,7 +192,7 @@ def get_categ(request,name):
 		except:
 			return JsonResponse({'status':'failed','message':'No such category'})
 		data = serializers.serialize('json', categ)
-		return JsonResponse(data, safe=False)
+		return HttpResponse(data, content_type="application/json")
 	else:
 		return JsonResponse({'error':'Only available via GET.','status_code':'400'})
 
